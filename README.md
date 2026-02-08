@@ -1,4 +1,3 @@
-
 ## 1. Произведите базовую настройку устройств  
  ### ● Настройте имена устройств согласно топологии. Используйте полное доменное имя
     HQ-RTR | BR-RTR:  
@@ -41,7 +40,7 @@
     маска /28 255.255.255.240 - 16 адресов (14 используемых)
     192.168.0.72/28	192.168.0.73 – 192.168.0.86	192.168.0.87 - Broadcast  
 ### ● Сведения об адресах занесите в отчёт, в качестве примера используйте Таблицу 2, в качестве примера используйте Прил_3_О1_КОД 09.02.06-1-2026-М1
-   ![Прил_3_О1_КОД 09.02.06-1-2026-М1](https://github.com/dizzamer/DEMO2026-Profile/blob/main/%D0%9F%D1%80%D0%B8%D0%BB_3_%D0%9E%D0%97_%D0%9A%D0%9E%D0%94%2009.02.06-1-2026-%D0%9C1.docx)
+   ![Прил_3_О1_КОД 09.02.06-1-2026-М1](%D0%9F%D1%80%D0%B8%D0%BB_3_%D0%9E%D0%97_%D0%9A%D0%9E%D0%94%2009.02.06-1-2026-%D0%9C1.docx)
     
  | Имя Устройства   | IPv4                     |  Интерфейс  | NIC       | Шлюз         | 
  | ---------        | ---------                | ---------   | --------- | ---------    |
@@ -339,14 +338,14 @@
       systemctl enable --now named  
       cp /etc/named.conf /etc/named.conf.backup - делаем бэкап файла  
       nano /etc/named.conf  
-   ![named первая часть](https://github.com/dizzamer/DEMO2026-Profile/blob/main/namedconf1.png)  
-   ![named вторая часть](https://github.com/dizzamer/DEMO2026-Profile/blob/main/namedconf3.png)  
+   ![named первая часть](namedconf1.png)  
+   ![named вторая часть](namedconf3.png)  
       mkdir /var/named/master  
       nano /var/named/master/au-team  
-   ![au team irpo зона](https://github.com/dizzamer/DEMO2026-Profile/blob/main/au-team1.png)  
+   ![au team irpo зона](au-team1.png)  
       nano /var/named/master/168.192.zone  
       можно сделать через cp /var/named/master/au-team /var/named/master/168.192.zone, чтобы конфиг с нуля не писать  
-   ![au team irpo зона](https://github.com/dizzamer/DEMO2026-Profile/blob/main/168.192zone.png)  
+   ![au team irpo зона](168.192zone.png)  
       chown -R root:named /var/named/master/  
       chown -R named:named /var/named  
       chown -R root:named /etc/named.conf    
@@ -354,10 +353,10 @@
       chmod 750 /var/named/master/    
       systemctl restart named   
       Проверить зоны можно командой named-checkconf -z    
-    ![au team irpo зона](https://github.com/dizzamer/DEMO2026-Profile/blob/main/chechkconf.png)  
+    ![au team irpo зона](chechkconf.png)  
       Для полной работоспособности на HQ-CLI нужно установить в качестве dns севрера HQ-SRV:  
       nano /etc/resolv.conf на всех устройствах должен иметь следюущий вид:  
-    ![resolvconf](https://github.com/dizzamer/DEMO2026-Profile/blob/main/resolv.conf.png)  
+    ![resolvconf](resolv.conf.png)  
       resolvectl dns ens3 192.168.0.2  
       Для полной работоспособности на HQ-RTR нужно установить в качестве dns севрера HQ-SRV:  
       ip name-server 192.168.0.2  
@@ -424,43 +423,43 @@
    ## •	Введите в домен машину HQ-CLI  
       Ввод в домен HQ-CLI
       Переводим DHCP в полуавтоматический режим и указываем собственный DNS
-   ![fstab](https://github.com/dizzamer/DEMO2026-Profile/blob/main/semiautodhcp.png) 
-   ![fstab](https://github.com/dizzamer/DEMO2026-Profile/blob/main/domain.png)
-   ![fstab](https://github.com/dizzamer/DEMO2026-Profile/blob/main/success.png)
+   ![fstab](semiautodhcp.png) 
+   ![fstab](domain.png)
+   ![fstab](success.png)
    ## 2.	Сконфигурируйте файловое хранилище:  
  ### Настройка проивзодится на HQ-SRV:
   Перед тем как начать проверяем, что установлены следюущие пакеты
   dnf install mdadm nfs-utils -y
 ## •	При помощи трёх дополнительных дисков, размером 1Гб каждый, на HQ-SRV сконфигурируйте дисковый массив уровня 5  
     mdadm --create --verbose /dev/md0 --level=5 --raid-devices=3 /dev/sdb /dev/sdc /dev/sdd     
- ![mdadmcreate](https://github.com/dizzamer/DEMO2026-Profile/blob/main/mdadm_create.png)    
- ![mdaddetail](https://github.com/dizzamer/DEMO2026-Profile/blob/main/mdadm_detail.png)  
+ ![mdadmcreate](mdadm_create.png)    
+ ![mdaddetail](mdadm_detail.png)  
 ## •	Имя устройства – md0, конфигурация массива размещается в файле /etc/mdadm.conf  
     mdadm --detail --scan >> /etc/mdadm.conf      
  ## •	Обеспечьте автоматическое монтирование в папку /raid     
     Добавляем в /etc/fstab:    
     nano /etc/fstab  
     /dev/md0 /raid ext4 defaults 0 0  
-![fstab](https://github.com/dizzamer/DEMO2026-Profile/blob/main/etcfstab.png)  
+![fstab](etcfstab.png)  
  ## •	Создайте раздел, отформатируйте раздел, в качестве файловой системы используйте ext4  
      mkfs.ext4 /dev/md0  
-   ![mkfs](https://github.com/dizzamer/DEMO2026-Profile/blob/main/mkfs.png)   
+   ![mkfs](mkfs.png)   
  ## •	Создаем точку монтирования и примонтируемся     
     mkdir -p /raid   
     mount -a   
-  ![mount](https://github.com/dizzamer/DEMO2026-Profile/blob/main/mount1.png)   
+  ![mount](mount1.png)   
  ## 3. Настройте сервер сетевой файловой системы(nfs) на HQ-SRV
  ### Настройка проивзодится на HQ-SRV:
   ## • в качестве папки общего доступа выберите /raid/nfs, доступ для чтения и записи для всей сети в сторону HQ-CLI   
   ## •	Создаем папку для NFS  
     mkdir -p /raid/nfs  
     chmod 777 /raid/nfs  
- ![mkdir_nfs](https://github.com/dizzamer/DEMO2026-Profile/blob/main/mkdir_nfsn.png)  
+ ![mkdir_nfs](mkdir_nfsn.png)  
  ## Настройка экспорта  
     Добавляем в /etc/exports:  
     nano /etc/exports  
     /raid/nfs 192.168.0.32/27(rw,sync,no_root_squash,no_all_squash,subtree_check)
-![exports](https://github.com/dizzamer/DEMO2026-Profile/blob/main/exports.png)  
+![exports](exports.png)  
   ## Применяем изменения и перезагружаем службу
     exportfs -rav  
     systemctl restart nfs-server  
@@ -469,11 +468,11 @@
       Добавляем в /etc/fstab:    
       nano /etc/fstab  
       hq-srv:/raid/nfs /mnt/nfs nfs defaults 0 0
-  ![fstab_hqcli](https://github.com/dizzamer/DEMO2026-Profile/blob/main/etcfstab%20cli.png)  
+  ![fstab_hqcli](etcfstab%20cli.png)  
   ## Создаем точку монтирования и примонтируемся  
     mkdir -p /mnt/nfs  
     mount -a 
-  ![mountdir_hqcli](https://github.com/dizzamer/DEMO2026-Profile/blob/main/nount_cli.png)  
+  ![mountdir_hqcli](nount_cli.png)  
   ## Проверка монтирования
       После этого при создании файла на клиенте, он должен появляться и на сервере
    •	Основные параметры сервера отметьте в отчёте  
@@ -484,7 +483,7 @@
      Вносим изменения в файл конфигурации:    
      Добавляем сети, которые необходимы и выставляем stratum 5   
      nano /etc/chrony.conf    
-  ![chrony_conf](https://github.com/dizzamer/DEMO2026-Profile/blob/main/chrony_conf.png)  
+  ![chrony_conf](chrony_conf.png)  
      Переводим службу в автозапуск и запускаем:   
      systemctl enable --now chronyd   
   ## •	В качестве клиентов ntp настройте: HQ-SRV, HQ-CLI, BR-RTR, BR-SRV.   
@@ -499,21 +498,21 @@
      Вносим изменения в файл конфигурации:  
      Комментируем/удаляем строки, где указаны ntp сервера и добавляем наш сервер 172.16.1.14  
      nano /etc/chrony.conf  
-  ![chrony_conf_cli](https://github.com/dizzamer/DEMO2026-Profile/blob/main/chrony_conf_cli.png)
+  ![chrony_conf_cli](chrony_conf_cli.png)
     Переводим службу в автозапуск и запускаем:    
     systemctl enable --now chronyd  
     Проевряем настройку командой chronyc sources -v, должен отобразиться наш сервер:  
-  ![chrony_conf_cli](https://github.com/dizzamer/DEMO2026-Profile/blob/main/chronyc_sources_cli.png)  
+  ![chrony_conf_cli](chronyc_sources_cli.png)  
     Не паникуем, может сразу не появится, рестартим сервис несколько раз командой systemctl restart chronyd  
   ### Настройка проивзодится на HQ-SRV:  
     Вносим изменения в файл конфигурации:  
     Комментируем/удаляем строки, где указаны ntp сервера и добавляем наш сервер 172.16.1.14   
     nano /etc/chrony.conf  
-  ![chrony_conf_cli](https://github.com/dizzamer/DEMO2026-Profile/blob/main/chronyc_conf_hqsrv.png)  
+  ![chrony_conf_cli](chronyc_conf_hqsrv.png)  
     Переводим службу в автозапуск и запускаем:    
     systemctl enable --now chronyd  
     Проевряем настройку командой chronyc sources, должен отобразиться наш сервер:  
-  ![chrony_conf_cli](https://github.com/dizzamer/DEMO2026-Profile/blob/main/chronyc_sources_hqsrv.png)  
+  ![chrony_conf_cli](chronyc_sources_hqsrv.png)  
     Не паникуем, может сразу не появится рестартим сервис несколько раз командой systemctl restart chronyd  
   ### Настройка проивзодится на BR-RTR:  
     en  
@@ -525,11 +524,11 @@
     Вносим изменения в файл конфигурации:  
     Комментируем/удаляем строки, где указаны ntp сервера и добавляем наш сервер 172.16.2.14   
     nano /etc/chrony.conf  
-  ![chrony_conf_cli](https://github.com/dizzamer/DEMO2026-Profile/blob/main/chronyc_conf_brsrv.png)  
+  ![chrony_conf_cli](chronyc_conf_brsrv.png)  
     Переводим службу в автозапуск и запускаем:    
     systemctl enable --now chronyd  
     Проевряем настройку командой chronyc sources, должен отобразиться наш сервер:  
-  ![chrony_conf_cli](https://github.com/dizzamer/DEMO2026-Profile/blob/main/chronyc_sources_brsrv.png)  
+  ![chrony_conf_cli](chronyc_sources_brsrv.png)  
     Не паникуем, может сразу не появится рестартим сервис несколько раз командой systemctl restart chronyd  
 ## 5.	Сконфигурируйте ansible на сервере BR-SRV  
   ### Настройка подключения по ssh BR-RTR | HQ-RTR
@@ -598,12 +597,12 @@
       ansible_password=P@ssw0rd  
       ansible_connection=network_cli  
       ansible_network_os=ios  
-   ![inventory](https://github.com/dizzamer/DEMO2026-Profile/blob/main/inventory_ini1.png)  
+   ![inventory](inventory_ini1.png)  
   ### •	Все указанные машины должны без предупреждений и ошибок отвечать pong на команду ping в ansible посланную с BR-SRV  
     Пингуем удаленные хосты с помощью Ansible находясь в пользователе sshuser:  
     ansible -i /etc/ansible/inventory.ini all -m ping  
     В результате под каждым хостом должно быть написано "ping": "pong".    
-   ![inventory](https://github.com/dizzamer/DEMO2026-Profile/blob/main/ansible_ping.png)   
+   ![inventory](ansible_ping.png)   
 ## 6.	Развертывание приложений в Docker на сервере BR-SRV. 
     Установка необходимых пакетов:  
     dnf install docker-ce docker-ce-cli docker-compose -y  
@@ -613,14 +612,14 @@
 ###  • Средствами docker должен создаваться стек контейнеров с веб приложением и базой данных
      • Используйте образы site_latest и mariadb_latest располагающиеся в
      директории docker в образе Additional.iso 
-   ![wikiyml](https://github.com/dizzamer/DEMO2026-Profile/blob/main/mntdocker.png) 
+   ![wikiyml](mntdocker.png) 
      • Основной контейнер testapp должен называться testapp
      • Контейнер с базой данных должен называться db
  ###  • Импортируйте образы в docker, укажите в yaml файле параметры подключения к СУБД, имя БД - testdb, пользователь testс паролем P@ssw0rd, порт приложения 8080, при необходимости другие параметры
       docker load < /mnt/docker/docker/mariadb_latest.tar
       docker load < /mnt/docker/docker/site_latest.tar
       Для написания web.yaml в качестве подсказки можно использовать файл readmetxt, который лежит в месте образов:   
-   ![readmetxt](https://github.com/dizzamer/DEMO2026-Profile/blob/main/readmetxt.png)
+   ![readmetxt](readmetxt.png)
    ### Готовим наш yaml файл  
       nano web.yaml
        services:
@@ -655,11 +654,11 @@
       networks: 
         - testapp-net     
    Конфигурационный файл:    
- ![webyaml](https://github.com/dizzamer/DEMO2026-Profile/blob/main/webyaml.png) 
+ ![webyaml](webyaml.png) 
    ### Поднимаем стек контейнеров с помощью команды:  
        docker compose -f web.yml up -d   
      • Приложение должно быть доступно для внешних подключений через порт 8080   
- ![web](https://github.com/dizzamer/DEMO2026-Profile/blob/main/compose_web.png)  
+ ![web](compose_web.png)  
 ## 7.	Разверните веб приложениена сервере HQ-SRV:   
 ### Подготовка   
     Переводим selinux в состояние Permissive:  
@@ -681,13 +680,13 @@
             Require all granted   
         </Directory>   
     </VirtualHost>  
-   ![dumpsql](https://github.com/dizzamer/DEMO2026-Profile/blob/main/webconf.png)    
+   ![dumpsql](webconf.png)    
 ## •	В качестве системы управления базами данных используйте mariadb   
      systemctl enable --now mariadb  
      mysql_secure_installation  
      Там везде вводим y, задаем пароль для пользователя root - P@ssw0rd  
 ## •	Файлы веб приложения и дамп базы данных находятся в директории web образа Additional.iso  
-![dumpsql](https://github.com/dizzamer/DEMO2026-Profile/blob/main/filewebapp.png)  
+![dumpsql](filewebapp.png)  
 ## •	Выполните импорт схемы и данных из файла dump.sql в базу данных webdb  
      Для начала создадим базу данных:  
      mariadb -u root -p  
@@ -700,13 +699,13 @@
      Делаем импорт базы данных:     
      mariadb -u root -p webdb < ./dump.sql  
 ## •	Файлы index.php и директорию images скопируйте в каталог веб сервера apache  
-   ![dumpsql](https://github.com/dizzamer/DEMO2026-Profile/blob/main/cpvarwww.png) 
+   ![dumpsql](cpvarwww.png) 
 ## •	В файле index.php укажите правильные учётные данные для подключения к БД  
-   ![dumpsql](https://github.com/dizzamer/DEMO2026-Profile/blob/main/indexphp.png) 
+   ![dumpsql](indexphp.png) 
 ## •	Запустите веб сервер и убедитесь в работоспособности приложения  
      Перезапускаем веб-сервер:  
      systemctl restart httpd  
-   ![dumpsql](https://github.com/dizzamer/DEMO2026-Profile/blob/main/webapp.png) 
+   ![dumpsql](webapp.png) 
 ## •	Основные параметры отметьте в отчёте  
 •	На главной странице должен отражаться номер рабочего места в виде арабской цифры, других подписей делать не надо  
 •	Основные параметры отметьте в отчёте  
@@ -732,7 +731,7 @@
      dnf install nginx -y  
      systemctl enable --now nginx  
      Перед настройкой конфига укажем значение server_names_hash_bucket_size 64
-   ![bucket_hash](https://github.com/dizzamer/DEMO2026-Profile/blob/main/nginx0.png)
+   ![bucket_hash](nginx0.png)
   ### •	При обращении по доменному имени web.au-team.irpo у клиента должно открываться веб приложение на HQ-SRV 
       nano /etc/nginx/nginx.conf  
       server {
@@ -747,7 +746,7 @@
             auth_basic_user_file /etc/nginx/.htpasswd;  
         } 
      }
-![nginx1](https://github.com/dizzamer/DEMO2026-Profile/blob/main/nginx3web1.png)
+![nginx1](nginx3web1.png)
   ### • При обращении по доменному имени docker.au-team.irpo клиента должно открываться веб приложение testapp
        nano /etc/nginx/nginx.conf
        server { 
@@ -760,7 +759,7 @@
             proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for; 
         }
       }
-![nginx2](https://github.com/dizzamer/DEMO2026-Profile/blob/main/nginx2docker1.png)
+![nginx2](nginx2docker1.png)
 ## 10.	На маршрутизаторе ISP настройте web-based аутентификацию:  
   ### •	При обращении к сайту web.au-team.irpo клиенту должно быть предложено ввести аутентификационные данные    
       • В качестве логина для аутентификации выберите WEBс паролем P@ssw0rd
@@ -790,10 +789,10 @@
     done  
     chmod +x import/sh  
     ./import.sh  
-![bash](https://github.com/dizzamer/DEMO2026-Profile/blob/main/importsh.png)    
+![bash](importsh.png)    
 ### • Убедитесь, что импортированные пользователи могут войти на машину HQ-CLI  
 Вход выполнен для пользователя выполнен  
-![sambauser](https://github.com/dizzamer/DEMO2026-Profile/blob/main/user_samba1.png)
+![sambauser](user_samba1.png)
 ## 2. Выполните настройку центра сертификации на базе HQ-SRV:
 ### • Необходимо использовать отечественные алгоритмы шифрования
 ### • Сертификаты выдаются на 30дней
@@ -833,7 +832,7 @@ https://docker.au-team.irpo у браузера клиента не должно
      Order allow, deny  
      Allow all  
    <Location>   
- ![cupsconf](https://github.com/dizzamer/DEMO2026-Profile/blob/main/cupsdconf.png)   
+ ![cupsconf](cupsdconf.png)   
   systemctl restart cupsd   
 
 ### • На клиенте HQ-CLI подключите виртуальный принтер как принтер по умолчанию.  
@@ -842,17 +841,17 @@ https://docker.au-team.irpo у браузера клиента не должно
     setenforce 0  
     getenforce  
   Далее заходим по админской учеткой student:student, должен появится принтер  
-  ![cupsadminlog](https://github.com/dizzamer/DEMO2026-Profile/blob/main/cupscheckpr.png)  
+  ![cupsadminlog](cupscheckpr.png)  
 
-  ![cupsadminlog](https://github.com/dizzamer/DEMO2026-Profile/blob/main/nlockprinter.png)  
+  ![cupsadminlog](nlockprinter.png)  
   
-  ![cupsadminlog](https://github.com/dizzamer/DEMO2026-Profile/blob/main/cupspdfadd3.png)    
+  ![cupsadminlog](cupspdfadd3.png)    
 
-  ![cupsadd4](https://github.com/dizzamer/DEMO2026-Profile/blob/main/cupspdfadd4.png)  
+  ![cupsadd4](cupspdfadd4.png)  
 
-  ![cupsadd5](https://github.com/dizzamer/DEMO2026-Profile/blob/main/cupspdfadd5.png)  
+  ![cupsadd5](cupspdfadd5.png)  
 
-  ![cupsadd5](https://github.com/dizzamer/DEMO2026-Profile/blob/main/cupspdfadd6.png)  
+  ![cupsadd5](cupspdfadd6.png)  
 ## 6. Реализуйте логирование при помощи rsyslog на устройствах HQ-RTR, BR-RTR, BR-SRV:
 ### • Сервер сбора логов расположен на HQ-SRV, убедитесь, что сервер не
 является клиентом самому себе
